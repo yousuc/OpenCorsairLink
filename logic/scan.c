@@ -123,6 +123,18 @@ corsairlink_device_setup(
         if (rr == 1)
         {
             msg_debug("Corsair Device has kernel driver attached\n");
+
+            rr = libusb_detach_kernel_driver( scanlist[scanlist_count].handle, 0 );
+            if ( rr < 0 )
+            {
+                msg_debug("Encountered LibUSB Error: %s!\n", libusb_strerror( rr ) );
+                return rr;
+            }
+            else
+            {
+                msg_debug("Detached kernel driver from Corsair Device\n");
+            }
+
         }
         else if ( rr == 0 )
         {
@@ -132,17 +144,6 @@ corsairlink_device_setup(
         {
             msg_debug("Encountered LibUSB Error: %s!\n", libusb_strerror( rr ) );
             return rr;
-        }
-
-        rr = libusb_detach_kernel_driver( scanlist[scanlist_count].handle, 0 );
-        if ( rr < 0 )
-        {
-            msg_debug("Encountered LibUSB Error: %s!\n", libusb_strerror( rr ) );
-            return rr;
-        }
-        else
-        {
-            msg_debug("Detached kernel driver from Corsair Device\n");
         }
 
         rr = libusb_claim_interface( scanlist[scanlist_count].handle, 0 );
