@@ -44,14 +44,14 @@ corsairlink_platinum_pump_mode(
 
     uint8_t ii = 0;
 
-    commands[++ii] = CommandId++;
-    commands[++ii] = WriteOneByte;
-    commands[++ii] = FAN_Select;
-    commands[++ii] = ctrl->channel;
+    commands[0x00] = CommandId++;
+    commands[0x00] = WriteOneByte;
+    commands[0x00] = FAN_Select;
+    commands[0x00] = ctrl->channel;
 
-    commands[++ii] = CommandId++;
-    commands[++ii] = ReadOneByte;
-    commands[++ii] = FAN_Mode;
+    commands[0x00] = CommandId++;
+    commands[0x00] = ReadOneByte;
+    commands[0x00] = FAN_Mode;
 
     commands[0] = ii;
 
@@ -78,14 +78,14 @@ corsairlink_platinum_pump_mode_read(
 
     uint8_t ii = 0;
 
-    commands[++ii] = CommandId++;
-    commands[++ii] = WriteOneByte;
-    commands[++ii] = FAN_Select;
-    commands[++ii] = ctrl->channel;
+    commands[0x00] = CommandId++;
+    commands[0x00] = WriteOneByte;
+    commands[0x00] = FAN_Select;
+    commands[0x00] = ctrl->channel;
 
-    commands[++ii] = CommandId++;
-    commands[++ii] = ReadOneByte;
-    commands[++ii] = FAN_Mode;
+    commands[0x00] = CommandId++;
+    commands[0x00] = ReadOneByte;
+    commands[0x00] = FAN_Mode;
 
     commands[0] = ii;
 
@@ -103,42 +103,8 @@ corsairlink_platinum_pump_mode_quiet(
     struct libusb_device_handle* handle,
     struct pump_control* ctrl )
 {
-    int rr;
-    uint8_t response[64];
-    uint8_t commands[64];
-
-    memset( response, 0, sizeof( response ) );
-    memset( commands, 0, sizeof( commands ) );
-
-    uint8_t ii = 0;
-
-    commands[++ii] = CommandId++;
-    commands[++ii] = WriteOneByte;
-    commands[++ii] = FAN_Select;
-    commands[++ii] = ctrl->channel;
-
-    commands[++ii] = CommandId++;
-    commands[++ii] = WriteOneByte;
-    commands[++ii] = FAN_Mode;
-
-    /*if ( dev->device_id == PlatinumH110i
-         || dev->device_id == PlatinumH110iGT ) // both only accept fixed RPMs
-    {
-        commands[++ii] = PLATINUM_FixedRPM;
-        commands[++ii] = CommandId++;
-        commands[++ii] = WriteTwoBytes;
-        commands[++ii] = FAN_FixedRPM;
-        commands[++ii] = new_pump_mode == PERFORMANCE ? 0x86 : 0x2E;
-        commands[++ii] = new_pump_mode == PERFORMANCE ? 0x0B : 0x09;
-    }*/
-
-    commands[++ii] = PLATINUM_Quiet;
-    commands[0] = ii;
-
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
-
-    return rr;
+    // PLATINUM_FAN_TABLE_QUIET(*ctrl);
+    return corsairlink_platinum_pump_curve(dev, handle, ctrl);
 }
 
 int
@@ -147,31 +113,8 @@ corsairlink_platinum_pump_mode_balanced(
     struct libusb_device_handle* handle,
     struct pump_control* ctrl )
 {
-    int rr;
-    uint8_t response[64];
-    uint8_t commands[64];
-
-    memset( response, 0, sizeof( response ) );
-    memset( commands, 0, sizeof( commands ) );
-
-    uint8_t ii = 0;
-
-    commands[++ii] = CommandId++;
-    commands[++ii] = WriteOneByte;
-    commands[++ii] = FAN_Select;
-    commands[++ii] = ctrl->channel;
-
-    commands[++ii] = CommandId++;
-    commands[++ii] = WriteOneByte;
-    commands[++ii] = FAN_Mode;
-
-    commands[++ii] = PLATINUM_Balanced;
-    commands[0] = ii;
-
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
-
-    return rr;
+    // PLATINUM_FAN_TABLE_BALANCED(*ctrl);
+    return corsairlink_platinum_pump_curve(dev, handle, ctrl);
 }
 
 int
@@ -180,64 +123,8 @@ corsairlink_platinum_pump_mode_performance(
     struct libusb_device_handle* handle,
     struct pump_control* ctrl )
 {
-    int rr;
-    uint8_t response[64];
-    uint8_t commands[64];
-
-    memset( response, 0, sizeof( response ) );
-    memset( commands, 0, sizeof( commands ) );
-
-    uint8_t ii = 0;
-
-    commands[++ii] = CommandId++;
-    commands[++ii] = WriteOneByte;
-    commands[++ii] = FAN_Select;
-    commands[++ii] = ctrl->channel;
-
-    commands[++ii] = CommandId++;
-    commands[++ii] = WriteOneByte;
-    commands[++ii] = FAN_Mode;
-    commands[++ii] = PLATINUM_Performance;
-
-    commands[0] = ii;
-
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
-
-    return rr;
-}
-
-int
-corsairlink_platinum_pump_mode_default(
-    struct corsair_device_info* dev,
-    struct libusb_device_handle* handle,
-    struct pump_control* ctrl )
-{
-    int rr;
-    uint8_t response[64];
-    uint8_t commands[64];
-
-    memset( response, 0, sizeof( response ) );
-    memset( commands, 0, sizeof( commands ) );
-
-    uint8_t ii = 0;
-
-    commands[++ii] = CommandId++;
-    commands[++ii] = WriteOneByte;
-    commands[++ii] = FAN_Select;
-    commands[++ii] = ctrl->channel;
-
-    commands[++ii] = CommandId++;
-    commands[++ii] = WriteOneByte;
-    commands[++ii] = FAN_Mode;
-    commands[++ii] = PLATINUM_Default;
-
-    commands[0] = ii;
-
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
-
-    return rr;
+    // PLATINUM_FAN_TABLE_EXTREME(*ctrl);
+    return corsairlink_platinum_pump_curve(dev, handle, ctrl);
 }
 
 int
@@ -246,30 +133,16 @@ corsairlink_platinum_pump_mode_custom(
     struct libusb_device_handle* handle,
     struct pump_control* ctrl )
 {
-    int rr;
-    uint8_t response[64];
-    uint8_t commands[64];
-    memset( response, 0, sizeof( response ) );
-    memset( commands, 0, sizeof( commands ) );
+    return corsairlink_platinum_pump_curve(dev, handle, ctrl);
+}
 
-    uint8_t ii = 0;
-    commands[++ii] = CommandId++;
-    commands[++ii] = WriteOneByte;
-    commands[++ii] = FAN_Select;
-    commands[++ii] = ctrl->channel;
-
-    commands[++ii] = CommandId++;
-    commands[++ii] = WriteOneByte;
-    commands[++ii] = FAN_Mode;
-
-    commands[++ii] = PLATINUM_Custom;
-
-    commands[0] = ii;
-
-    rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
-    rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
-
-    return rr;
+int
+corsairlink_platinum_pump_mode_default(
+    struct corsair_device_info* dev,
+    struct libusb_device_handle* handle,
+    struct pump_control* ctrl )
+{
+    return corsairlink_platinum_pump_mode_balanced(dev, handle, ctrl);
 }
 
 int
@@ -287,41 +160,38 @@ corsairlink_platinum_pump_curve(
     // commands[0] = FanCurve;
     // commands[1] = UnknownFanCurve;
 
-    uint8_t ii = 0;
+    commands[0x00] = CommandId++;
+    commands[0x00] = WriteThreeBytes;
+    commands[0x00] = FAN_TempTable;
+    commands[0x00] = 0x0A;
 
-    commands[++ii] = CommandId++;
-    commands[++ii] = WriteThreeBytes;
-    commands[++ii] = FAN_TempTable;
-    commands[++ii] = 0x0A;
+    commands[0x00] = ctrl->table[0].temperature;
+    commands[0x00] = 0x00;
+    commands[0x00] = ctrl->table[1].temperature;
+    commands[0x00] = 0x00;
+    commands[0x00] = ctrl->table[2].temperature;
+    commands[0x00] = 0x00;
+    commands[0x00] = ctrl->table[3].temperature;
+    commands[0x00] = 0x00;
+    commands[0x00] = ctrl->table[4].temperature;
+    commands[0x00] = 0x00;
 
-    commands[++ii] = ctrl->table[0].temperature;
-    commands[++ii] = 0x00;
-    commands[++ii] = ctrl->table[1].temperature;
-    commands[++ii] = 0x00;
-    commands[++ii] = ctrl->table[2].temperature;
-    commands[++ii] = 0x00;
-    commands[++ii] = ctrl->table[3].temperature;
-    commands[++ii] = 0x00;
-    commands[++ii] = ctrl->table[4].temperature;
-    commands[++ii] = 0x00;
+    commands[0x00] = CommandId++;
+    commands[0x00] = WriteThreeBytes;
+    commands[0x00] = FAN_RPMTable;
+    commands[0x00] = 0x0A;
 
-    commands[++ii] = CommandId++;
-    commands[++ii] = WriteThreeBytes;
-    commands[++ii] = FAN_RPMTable;
-    commands[++ii] = 0x0A;
+    commands[0x00] = ctrl->table[0].speed;
+    commands[0x00] = 0x00;
+    commands[0x00] = ctrl->table[1].speed;
+    commands[0x00] = 0x00;
+    commands[0x00] = ctrl->table[2].speed;
+    commands[0x00] = 0x00;
+    commands[0x00] = ctrl->table[3].speed;
+    commands[0x00] = 0x00;
+    commands[0x00] = ctrl->table[4].speed;
+    commands[0x00] = 0x00;
 
-    commands[++ii] = ctrl->table[0].speed;
-    commands[++ii] = 0x00;
-    commands[++ii] = ctrl->table[1].speed;
-    commands[++ii] = 0x00;
-    commands[++ii] = ctrl->table[2].speed;
-    commands[++ii] = 0x00;
-    commands[++ii] = ctrl->table[3].speed;
-    commands[++ii] = 0x00;
-    commands[++ii] = ctrl->table[4].speed;
-    commands[++ii] = 0x00;
-
-    commands[0] = ii;
     rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
     rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
 
@@ -340,29 +210,22 @@ corsairlink_platinum_pump_speed(
     memset( response, 0, sizeof( response ) );
     memset( commands, 0, sizeof( commands ) );
 
-    uint8_t ii = 0;
+    commands[0x00] = 0x3F;
+    commands[0x01] = CommandId++;
 
-    commands[++ii] = CommandId++;
-    commands[++ii] = WriteOneByte;
-    commands[++ii] = FAN_Select;
-    commands[++ii] = ctrl->channel;
+    commands[0x00] = 0xFF;
 
-    commands[++ii] = CommandId++;
-    commands[++ii] = ReadTwoBytes;
-    commands[++ii] = FAN_ReadRPM;
+    commands[0x3F] = 0x00;
+    commands[0x40] = 0xFF;
 
-    commands[++ii] = CommandId++;
-    commands[++ii] = ReadTwoBytes;
-    commands[++ii] = FAN_MaxRecordedRPM;
-
-    commands[0] = ii;
     rr = dev->driver->write( handle, dev->write_endpoint, commands, 64 );
     rr = dev->driver->read( handle, dev->read_endpoint, response, 64 );
 
-    msg_debug2( "Speed: %02X %02X\n", response[5], response[4] );
+    msg_debug2( "Speed: %02X %02X\n", response[0x1D], response[0x1E] );
     msg_debug2( "Max Speed: %02X %02X\n", response[9], response[8] );
-    ctrl->speed = ( response[5] << 8 ) + response[4];
-    ctrl->max_speed = ( response[9] << 8 ) + response[8];
+
+    ctrl->speed = ( response[0x1E] << 8 ) + response[0x1D];
+    ctrl->max_speed = 0xFFFF;
 
     return rr;
 }

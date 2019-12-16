@@ -90,9 +90,23 @@ enum PLATINUM_Fan_Modes
     PLATINUM_Custom = 0x0E
 };
 
-static uint8_t CommandId = 0x81;
+static uint8_t CommandId = 0x00;
 
 #define PLATINUM_FAN_TABLE_QUIET( x ) \
+    x[0].temperature = 0x14;        \
+    x[1].temperature = 0x20;        \
+    x[2].temperature = 0x28;        \
+    x[3].temperature = 0x32;        \
+    x[4].temperature = 0x37;        \
+    x[5].temperature = 0x3c;        \
+    x[0].speed = 0x19;              \
+    x[1].speed = 0x27;              \
+    x[2].speed = 0x32;              \
+    x[3].speed = 0x4b;              \
+    x[4].speed = 0x5a;              \
+    x[5].speed = 0x64;
+
+#define PLATINUM_FAN_TABLE_BALANCED( x ) \
     x[0].temperature = 0x14;        \
     x[1].temperature = 0x20;        \
     x[2].temperature = 0x28;        \

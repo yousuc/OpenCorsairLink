@@ -68,6 +68,7 @@ LOWLEVEL_SOURCE := \
 	lowlevel/asetek.c \
 	lowlevel/commanderpro.c \
 	lowlevel/coolit.c \
+	lowlevel/platinum.c \
 	lowlevel/rmi.c
 
 PROTOCOL_SOURCE := \
@@ -85,15 +86,21 @@ PROTOCOL_SOURCE := \
 	protocol/commanderpro/fan.c \
 	protocol/commanderpro/power.c \
 	protocol/commanderpro/temperature.c \
-	protocol/rmi/core.c \
-	protocol/rmi/power.c \
-	protocol/rmi/temperature.c \
-	protocol/rmi/time.c \
 	protocol/coolit/core.c \
 	protocol/coolit/fan.c \
 	protocol/coolit/led.c \
 	protocol/coolit/pump.c \
-	protocol/coolit/temperature.c
+	protocol/coolit/temperature.c \
+	protocol/platinum/core.c \
+	protocol/platinum/fan.c \
+	protocol/platinum/fan_curve.c \
+	protocol/platinum/led.c \
+	protocol/platinum/pump.c \
+	protocol/platinum/temperature.c \
+	protocol/rmi/core.c \
+	protocol/rmi/power.c \
+	protocol/rmi/temperature.c \
+	protocol/rmi/time.c
 
 HEADER := $(shell find ./include -name '*.h')
 
