@@ -22,6 +22,9 @@
 
 #include <libusb.h>
 
+uint8_t corsairlink_device_list_count =
+    sizeof( corsairlink_devices ) / sizeof( corsairlink_devices[0] );
+
 struct corsair_device_info corsairlink_devices[] = {
     {
         .vendor_id = 0x1b1c,
@@ -268,6 +271,7 @@ struct corsair_device_info corsairlink_devices[] = {
         .read_endpoint = 0x01 | LIBUSB_ENDPOINT_IN,
         .write_endpoint = 0x02 | LIBUSB_ENDPOINT_OUT,
         .driver = &corsairlink_driver_commanderpro,
+        .lowlevel = &corsairlink_lowlevel_commanderpro,
         .led_control_count = 2,
         .fan_control_count = 6,
         .pump_index = 0,
@@ -559,6 +563,3 @@ struct corsair_device_info corsairlink_devices[] = {
         .pump_index = 0,
     },
 };
-
-uint8_t corsairlink_device_list_count =
-    sizeof( corsairlink_devices ) / sizeof( corsairlink_devices[0] );
